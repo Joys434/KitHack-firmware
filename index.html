@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitHack v1 - Прошивка для ESP32</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --text: #f0f0f0;
+            --accent: #bb86fc;
+            --accent-rgb: 187, 134, 252;
+            --secondary: #333;
+            --success: #6bff6b;
+            --border: #444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            text-align: center;
+        }
+        
+        .logo-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .cat-logo {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cat-head {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 10px;
+        }
+        
+        .cat-ear {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        
+        .cat-ear.left {
+            top: 0;
+            left: 15px;
+            transform: rotate(-15deg);
+        }
+        
+        .cat-ear.right {
+            top: 0;
+            right: 15px;
+            transform: rotate(15deg);
+        }
+        
+        .cat-eye {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #000;
+            border-radius: 50%;
+            top: 35px;
+        }
+        
+        .cat-eye.left {
+            left: 30px;
+        }
+        
+        .cat-eye.right {
+            right: 30px;
+        }
+        
+        .cat-nose {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #000;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            top: 55px;
+        }
+        
+        .cat-whisker {
+            position: absolute;
+            height: 1px;
+            background: var(--accent);
+            width: 25px;
+            top: 55px;
+        }
+        
+        .whisker-left-1 {
+            left: 10px;
+            transform: rotate(15deg);
+        }
+        
+        .whisker-left-2 {
+            left: 10px;
+            transform: rotate(-15deg);
+            top: 60px;
+        }
+        
+        .whisker-right-1 {
+            right: 10px;
+            transform: rotate(-15deg);
+        }
+        
+        .whisker-right-2 {
+            right: 10px;
+            transform: rotate(15deg);
+            top: 60px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.05em;
+            background: linear-gradient(90deg, 
+                rgba(255, 0, 0, 0.8) 0%, 
+                rgba(0, 255, 0, 0.8) 33%, 
+                rgba(0, 0, 255, 0.8) 66%, 
+                rgba(255, 0, 0, 0.8) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% 300%;
+            animation: rgb 4s ease infinite;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        .download-section {
+            background: #111;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .btn:hover {
+            background: #a45ffc;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(var(--accent-rgb), 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .version {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .features {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .feature-card {
+            background: #111;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        .feature-list {
+            list-style-type: none;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .feature-list li:before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+        }
+        
+        .terminal {
+            background: #000;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 1rem;
+            line-height: 1.5;
+            border: 1px solid var(--border);
+        }
+        
+        .terminal-line {
+            color: #33ff33;
+        }
+        
+        .terminal-comment {
+            color: #888;
+        }
+        
+        .terminal-prompt {
+            color: #ffff33;
+        }
+        
+        .interface-demo {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin: 2rem 0;
+            font-family: monospace;
+            line-height: 1.5;
+            color: var(--accent);
+        }
+        
+        .interface-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--accent);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+        
+        .project-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 1.1rem;
+            border: 1px solid var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .project-link:hover {
+            background: rgba(var(--accent-rgb), 0.1);
+            transform: translateY(-2px);
+        }
+        
+        @keyframes rgb {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <div class="cat-logo">
+                <div class="cat-head"></div>
+                <div class="cat-ear left"></div>
+                <div class="cat-ear right"></div>
+                <div class="cat-eye left"></div>
+                <div class="cat-eye right"></div>
+                <div class="cat-nose"></div>
+                <div class="cat-whisker whisker-left-1"></div>
+                <div class="cat-whisker whisker-left-2"></div>
+                <div class="cat-whisker whisker-right-1"></div>
+                <div class="cat-whisker whisker-right-2"></div>
+            </div>
+        </div>
+        <div>
+            <h1>KitHack v1</h1>
+            <p class="subtitle">Многофункциональная прошивка для ESP32-WROOM-32</p>
+        </div>
+    </header>
+    
+    <div class="download-section">
+        <h2>Скачать прошивку</h2>
+        <p>Версия 1.0 - Последнее обновление: 15.06.2025</p>
+        <a href="KitHack_v1.bin" class="btn" download>Скачать KitHack_v1.bin (2.1 MB)</a>
+        <p class="version">Прошивка совместима с ESP32-WROOM-32 и ESP32-WROOM-32D/E</p>
+    </div>
+    
+    <div class="features">
+        <h2 class="section-title">Функции прошивки</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3 class="feature-title">WiFi Функции</h3>
+                <ul class="feature-list">
+                    <li>WiFi Spam - создание множества фейковых точек доступа</li>
+                    <li>Evil Portal - фишинговая страница для сбора учетных данных</li>
+                    <li>WiFi Jammer - глушение WiFi сигналов</li>
+                    <li>Управление WiFi (включение/выключение)</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3 class="feature-title">IR Функции</h3>
+                <ul class="feature-list">
+                    <li>IR-B-Gone - выключение телевизоров популярных брендов</li>
+                    <li>Project Remote - управление проекторами (Epson, BenQ, Acer)</li>
+                    <li>Поддержка NEC протокола</li>
+                    <li>Библиотека для сохранения и воспроизведения сигналов</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3 class="feature-title">Системные функции</h3>
+                <ul class="feature-list">
+                    <li>Часы с автономным временем</li>
+                    <li>SD Files - доступ к файлам на SD карте</li>
+                    <li>WebUI - загрузка файлов на устройство через браузер</li>
+                    <li>FILES OS - файловый менеджер для LittleFS</li>
+                    <li>Настройка времени</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="terminal">
+        <div class="terminal-line">> KitHack_v1 [ESP32]</div>
+        <div class="terminal-line">> Версия прошивки: 1.0</div>
+        <div class="terminal-line">> Статус: Готов к работе</div>
+        <div class="terminal-line">> Заставка: Кот KitHack</div>
+        <div class="terminal-line">> Файловая система: LittleFS активна</div>
+        <div class="terminal-line">> Память: 1.2MB / 1.5MB свободно</div>
+        <div class="terminal-comment">// Используйте кнопки для навигации по меню</div>
+        <div class="terminal-prompt">> Главное меню:</div>
+        <div class="terminal-line">> [12:45] IR WIFI BLUETOOTH OTHER</div>
+        <div class="terminal-line">> SD FILES NRF24-HACK CC1101 SETTINGS</div>
+    </div>
+    
+    <div class="features">
+        <h2 class="section-title">Интерфейс прошивки</h2>
+        
+        <div class="interface-demo">
+            <div class="interface-title">Главное меню</div>
+            <div>[12:45]</div>
+            <div>> IR</div>
+            <div>  WIFI</div>
+            <div>  BLUETOOTH</div>
+            <div>  OTHER</div>
+            <div>  SD FILES</div>
+            <div>  NRF24-HACK</div>
+            <div>  CC1101</div>
+            <div>  SETTINGS</div>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3 class="feature-title">WiFi Меню</h3>
+                <ul class="feature-list">
+                    <li>> WIFI SPAM</li>
+                    <li>  WIFI OFF</li>
+                    <li>  EVIL PORTAL</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3 class="feature-title">IR Меню</h3>
+                <ul class="feature-list">
+                    <li>> IR-B-GONE</li>
+                    <li>  PROJEC-REMOTE</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3 class="feature-title">Other Меню</h3>
+                <ul class="feature-list">
+                    <li>> WEBUI</li>
+                    <li>  FILES OS</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>KitHack v1 - Многофункциональная прошивка для ESP32</p>
+        <p>© 2025 KitHack Project | Все права защищены</p>
+        <a href="https://github.com/yourusername/KitHack" class="project-link" target="_blank">
+            Официальный сайт проекта
+        </a>
+    </footer>
+
+    <script>
+        // Добавляем небольшую анимацию для логотипа кота
+        document.addEventListener('DOMContentLoaded', function() {
+            const catLogo = document.querySelector('.cat-logo');
+            
+            setInterval(() => {
+                catLogo.style.transform = 'translateY(-5px)';
+                setTimeout(() => {
+                    catLogo.style.transform = 'translateY(0)';
+                }, 300);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
