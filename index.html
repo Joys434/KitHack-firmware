@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitHack v1 Firmware</title>
+    <style>
+        :root {
+            --background: #0d0c11;
+            --card-bg: #1a1825;
+            --accent: #8a2be2;
+            --text: #e0d7ff;
+            --terminal: #00ff41;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .logo-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cat-logo {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .rgb-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff00cc, #3333ff, #00ccff, #00ff99);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% 300%;
+            animation: rgb-animation 4s ease infinite;
+        }
+        
+        @keyframes rgb-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .download-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(138, 43, 226, 0.5);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        
+        .feature-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-card li {
+            margin-bottom: 0.7rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-card li:before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: var(--terminal);
+        }
+        
+        .wiring-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .wiring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .wiring-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1.2rem;
+            font-size: 0.95rem;
+        }
+        
+        .wiring-card h4 {
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 0.5rem;
+        }
+        
+        .wiring-card pre {
+            white-space: pre-wrap;
+            color: var(--terminal);
+            font-family: monospace;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(224, 215, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .website-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .website-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .logo-title {
+                flex-direction: column;
+            }
+            
+            .rgb-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-title">
+                <svg class="cat-logo" viewBox="0 0 100 100">
+                    <circle cx="50" cy="40" r="20" fill="#8a2be2"/>
+                    <polygon points="35,15 30,30 40,30" fill="#8a2be2"/>
+                    <polygon points="65,15 70,30 60,30" fill="#8a2be2"/>
+                    <circle cx="43" cy="38" r="4" fill="#0d0c11"/>
+                    <circle cx="57" cy="38" r="4" fill="#0d0c11"/>
+                    <polygon points="47,45 53,45 50,50" fill="#0d0c11"/>
+                    <line x1="35" y1="43" x2="25" y2="40" stroke="#8a2be2" stroke-width="2"/>
+                    <line x1="35" y1="48" x2="25" y2="49" stroke="#8a2be2" stroke-width="2"/>
+                    <line x1="65" y1="43" x2="75" y2="40" stroke="#8a2be2" stroke-width="2"/>
+                    <line x1="65" y1="48" x2="75" y2="49" stroke="#8a2be2" stroke-width="2"/>
+                </svg>
+                <h1 class="rgb-title">KitHack v1</h1>
+            </div>
+            <p>Многофункциональная прошивка для ESP32 с продвинутыми инструментами</p>
+        </header>
+        
+        <section class="download-section">
+            <h2>Прошивка KitHack v1</h2>
+            <p>Последняя версия: 1.0 | Дата релиза: 15.06.2025</p>
+            <a href="KitHack_v1.bin" class="download-btn">Скачать прошивку</a>
+            <p>Размер файла: 1.2 MB | Для ESP32-WROOM-32</p>
+        </section>
+        
+        <section class="features-grid">
+            <div class="feature-card">
+                <h3>WiFi функции</h3>
+                <ul>
+                    <li>WiFi Spam - создает 15 фальшивых точек доступа</li>
+                    <li>Evil Portal - фишинговый портал для сбора учетных данных</li>
+                    <li>Jammer - глушение WiFi сигналов (2.4 ГГц)</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>IR функции</h3>
+                <ul>
+                    <li>IR-B-Gone - выключает телевизоры популярных брендов</li>
+                    <li>Project Remote - управление проекторами (Epson, BenQ, Acer)</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Системные функции</h3>
+                <ul>
+                    <li>Clock - точное время с обновлением на дисплее</li>
+                    <li>SD Files - доступ к файлам на SD карте</li>
+                    <li>FILES OS - файловый менеджер для LittleFS</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Другие функции</h3>
+                <ul>
+                    <li>WebUI - веб-интерфейс для управления устройством</li>
+                    <li>NRF24-Hack - инструменты для работы с NRF24</li>
+                    <li>CC1101 - сканирование и копирование сигналов</li>
+                    <li>Bluetooth Spam/Jammer - спам и глушение BT</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="wiring-section">
+            <h2>Схема подключения</h2>
+            <div class="wiring-grid">
+                <div class="wiring-card">
+                    <h4>OLED Display (128x64)</h4>
+                    <pre>SDA  -> GPIO 21
+SCL  -> GPIO 22</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4>Кнопки</h4>
+                    <pre>UP     -> GPIO 32
+DOWN   -> GPIO 33
+LEFT   -> GPIO 25
+RIGHT  -> GPIO 26
+SELECT -> GPIO 27
+BACK   -> GPIO 34</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4>ИК светодиод</h4>
+                    <pre>DATA -> GPIO 23</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4>NRF24L01</h4>
+                    <pre>CE   -> GPIO 2
+CSN  -> GPIO 15
+MOSI -> GPIO 13
+MISO -> GPIO 12
+SCK  -> GPIO 14
+IRQ  -> Не подключен</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4>SD Card Module</h4>
+                    <pre>CS   -> GPIO 5
+MOSI -> GPIO 23
+MISO -> GPIO 19
+SCK  -> GPIO 18</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4>CC1101 Module</h4>
+                    <pre>CS   -> GPIO 4
+MOSI -> GPIO 13
+MISO -> GPIO 12
+SCK  -> GPIO 14
+GDO0 -> GPIO 16
+GDO2 -> GPIO 35</pre>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Официальный сайт проекта: <a href="https://kithack-firmware.ru" class="website-link">https://kithack-firmware.ru</a></p>
+            <p>KitHack v1 | 2025 | Все права защищены</p>
+        </footer>
+    </div>
+</body>
+</html>
