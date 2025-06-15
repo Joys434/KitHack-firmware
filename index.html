@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitHack v1 Firmware</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --background: #0d0c11;
+            --card-bg: #1a1825;
+            --accent: #8a2be2;
+            --accent-light: #a45cff;
+            --text: #e0d7ff;
+            --terminal: #00ff41;
+            --glow: 0 0 15px rgba(138, 43, 226, 0.7);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .logo-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cat-logo {
+            width: 80px;
+            height: 80px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .rgb-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff00cc, #3333ff, #00ccff, #00ff99);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% 300%;
+            animation: rgb-animation 4s ease infinite;
+            text-shadow: var(--glow);
+        }
+        
+        @keyframes rgb-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--accent-light);
+            margin-top: 0.5rem;
+        }
+        
+        .download-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .download-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(138, 43, 226, 0.4);
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.1) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(45deg) translateX(-150%); }
+            100% { transform: rotate(45deg) translateX(150%); }
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(138, 43, 226, 0.5);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--accent);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        
+        .feature-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-card h3 i {
+            font-size: 1.5rem;
+        }
+        
+        .feature-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .feature-card li {
+            margin-bottom: 0.7rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-card li:before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: var(--terminal);
+            font-weight: bold;
+        }
+        
+        .wiring-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .wiring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .wiring-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 1.2rem;
+            font-size: 0.95rem;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+        }
+        
+        .wiring-card:hover {
+            border-color: var(--accent);
+        }
+        
+        .wiring-card h4 {
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .wiring-card pre {
+            white-space: pre-wrap;
+            color: var(--terminal);
+            font-family: monospace;
+            line-height: 1.8;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(224, 215, 255, 0.7);
+            font-size: 0.9rem;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .website-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+            display: inline-block;
+            margin: 0 0.5rem;
+        }
+        
+        .website-link:hover {
+            color: var(--accent-light);
+            text-decoration: underline;
+        }
+        
+        .chip {
+            display: inline-block;
+            background: rgba(138, 43, 226, 0.2);
+            color: var(--accent-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 0.3rem;
+        }
+        
+        .version-info {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .logo-title {
+                flex-direction: column;
+            }
+            
+            .rgb-title {
+                font-size: 2.5rem;
+            }
+            
+            .wiring-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-title">
+                <svg class="cat-logo" viewBox="0 0 100 100">
+                    <circle cx="50" cy="40" r="20" fill="#8a2be2"/>
+                    <polygon points="35,15 30,30 40,30" fill="#8a2be2"/>
+                    <polygon points="65,15 70,30 60,30" fill="#8a2be2"/>
+                    <circle cx="43" cy="38" r="4" fill="#0d0c11"/>
+                    <circle cx="57" cy="38" r="4" fill="#0d0c11"/>
+                    <polygon points="47,45 53,45 50,50" fill="#0d0c11"/>
+                    <line x1="35" y1="43" x2="25" y2="40" stroke="#8a2be2" stroke-width="2"/>
+                    <line x1="35" y1="48" x2="25" y2="49" stroke="#8a2be2" stroke-width="2"/>
+                    <line x1="65" y1="43" x2="75" y2="40" stroke="#8a2be2" stroke-width="2"/>
+                    <line x1="65" y1="48" x2="75" y2="49" stroke="#8a2be2" stroke-width="2"/>
+                </svg>
+                <h1 class="rgb-title">KitHack v1</h1>
+            </div>
+            <p class="tagline">Многофункциональная прошивка для ESP32 с продвинутыми инструментами</p>
+        </header>
+        
+        <section class="download-section">
+            <h2><i class="fas fa-download"></i> Прошивка KitHack v1</h2>
+            <p>Последняя версия: 1.0 | Дата релиза: 15.06.2025</p>
+            <a href="KitHack_v1.bin" class="download-btn">
+                <i class="fas fa-microchip"></i> Скачать прошивку
+            </a>
+            <div class="version-info">
+                <span class="chip"><i class="fas fa-weight-hanging"></i> Размер: 1.2 MB</span>
+                <span class="chip"><i class="fas fa-microchip"></i> Для ESP32-WROOM-32</span>
+                <span class="chip"><i class="fas fa-code-branch"></i> Версия: Stable</span>
+            </div>
+        </section>
+        
+        <h2 style="color: var(--accent); margin: 2rem 0 1.5rem;"><i class="fas fa-star"></i> Основные функции прошивки</h2>
+        
+        <section class="features-grid">
+            <div class="feature-card">
+                <h3><i class="fas fa-wifi"></i> WiFi функции</h3>
+                <ul>
+                    <li><strong>WiFi Spam</strong> - создает 15 фальшивых точек доступа</li>
+                    <li><strong>Evil Portal</strong> - фишинговый портал для сбора учетных данных</li>
+                    <li><strong>Jammer</strong> - глушение WiFi сигналов (2.4 ГГц)</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3><i class="fas fa-tv"></i> IR функции</h3>
+                <ul>
+                    <li><strong>IR-B-Gone</strong> - выключает телевизоры популярных брендов (Samsung, LG, Philips)</li>
+                    <li><strong>Project Remote</strong> - управление проекторами (Epson, BenQ, Acer)</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3><i class="fas fa-cogs"></i> Системные функции</h3>
+                <ul>
+                    <li><strong>Clock</strong> - точное время с обновлением на дисплее</li>
+                    <li><strong>SD Files</strong> - доступ к файлам на SD карте</li>
+                    <li><strong>FILES OS</strong> - файловый менеджер для LittleFS</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3><i class="fas fa-layer-group"></i> Другие функции</h3>
+                <ul>
+                    <li><strong>WebUI</strong> - веб-интерфейс для управления устройством через браузер</li>
+                    <li><strong>NRF24-Hack</strong> - инструменты для работы с NRF24</li>
+                    <li><strong>CC1101</strong> - сканирование и копирование сигналов</li>
+                    <li><strong>Bluetooth</strong> - спам и глушение BT устройств</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="wiring-section">
+            <h2><i class="fas fa-project-diagram"></i> Схема подключения</h2>
+            <p style="margin-top: 0.5rem; color: var(--accent-light);">Правильное подключение компонентов для работы прошивки</p>
+            
+            <div class="wiring-grid">
+                <div class="wiring-card">
+                    <h4><i class="fas fa-desktop"></i> OLED Display (128x64)</h4>
+                    <pre>SDA  -> GPIO 21
+SCL  -> GPIO 22</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4><i class="fas fa-gamepad"></i> Кнопки</h4>
+                    <pre>UP     -> GPIO 32
+DOWN   -> GPIO 33
+LEFT   -> GPIO 25
+RIGHT  -> GPIO 26
+SELECT -> GPIO 27
+BACK   -> GPIO 34</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4><i class="fas fa-broadcast-tower"></i> ИК светодиод</h4>
+                    <pre>DATA -> GPIO 23</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4><i class="fas fa-satellite"></i> NRF24L01</h4>
+                    <pre>CE   -> GPIO 2
+CSN  -> GPIO 15
+MOSI -> GPIO 13
+MISO -> GPIO 12
+SCK  -> GPIO 14
+IRQ  -> Не подключен</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4><i class="fas fa-sd-card"></i> SD Card Module</h4>
+                    <pre>CS   -> GPIO 5
+MOSI -> GPIO 23
+MISO -> GPIO 19
+SCK  -> GPIO 18</pre>
+                </div>
+                
+                <div class="wiring-card">
+                    <h4><i class="fas fa-wifi"></i> CC1101 Module</h4>
+                    <pre>CS   -> GPIO 4
+MOSI -> GPIO 13
+MISO -> GPIO 12
+SCK  -> GPIO 14
+GDO0 -> GPIO 16
+GDO2 -> GPIO 35</pre>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Официальный сайт проекта: 
+                <a href="https://KitHack-Firmware.ru" class="website-link">
+                    <i class="fas fa-globe"></i> https://KitHack-Firmware.ru
+                </a>
+            </p>
+            <p>KitHack v1 | 2025 | Все права защищены</p>
+            <p style="margin-top: 0.5rem;">
+                <a href="#" class="website-link"><i class="fas fa-book"></i> Документация</a>
+                <a href="#" class="website-link"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#" class="website-link"><i class="fas fa-comments"></i> Форум поддержки</a>
+            </p>
+        </footer>
+    </div>
+    
+    <script>
+        // Анимация для карточек при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            const wiringCards = document.querySelectorAll('.wiring-card');
+            
+            featureCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 200 * index);
+            });
+            
+            wiringCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 200 * index + 600);
+            });
+            
+            // Инициализация стилей для анимации
+            featureCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s, transform 0.5s';
+            });
+            
+            wiringCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s, transform 0.5s';
+            });
+        });
+    </script>
+</body>
+</html>
